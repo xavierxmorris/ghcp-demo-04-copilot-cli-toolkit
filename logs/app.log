@@ -1,0 +1,15 @@
+2026-05-19T09:00:03 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:06 user=u_004 endpoint=/api/users status=200
+2026-05-19T09:00:09 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:11 user=u_017 endpoint=/api/checkout status=502
+2026-05-19T09:00:14 user=u_022 endpoint=/api/orders status=200
+2026-05-19T09:00:17 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:21 user=u_009 endpoint=/api/auth/login status=401
+2026-05-19T09:00:24 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:27 user=u_031 endpoint=/api/inventory status=200
+2026-05-19T09:00:30 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:33 user=u_044 endpoint=/api/orders status=500
+2026-05-19T09:00:35 user=u_002 endpoint=/api/users status=200
+2026-05-19T09:00:38 user=u_017 endpoint=/api/checkout status=500
+2026-05-19T09:00:41 user=u_017 endpoint=/api/checkout status=500
+(see scripts/seed_logs.py to generate a larger fixture)
