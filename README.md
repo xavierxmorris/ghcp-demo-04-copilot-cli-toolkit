@@ -12,6 +12,11 @@ approval), edit files, and call MCP tools.
 This repo is intentionally a little messy — you'll use Copilot CLI to **clean
 it up, write a script from scratch, refactor a function, and bulk-rename files**.
 
+**Go deeper:** [WORKSHOP.md](WORKSHOP.md) adds a permission-aware lab,
+byte-level dry-run checks, a log-analysis answer key, failure drills, and
+safe reset guidance. Commands and session guidance were checked with
+**Copilot CLI 1.0.84-1 on 7 September 2026**; use `/help` for your build.
+
 ---
 
 ## What you'll learn
@@ -53,11 +58,11 @@ log file under `logs/`.
 Use the `-p` flag for a single prompt, no REPL:
 
 ```bash
-copilot -p "Show me the git command to delete every local branch already merged into main, but never delete main or develop."
+copilot -p "Explain how to list local branches already merged into main. Do not execute commands, delete branches, or modify files."
 ```
 
-✅ Copilot proposes a one-liner *and* explains each flag. You decide whether
-to run it.
+Review the proposed command and explanation. `-p` selects programmatic mode,
+not a read-only sandbox: permissions still determine what tools can run.
 
 🎯 **Lesson:** Treat single-shot Copilot CLI as "Stack Overflow for the
 current millisecond" — context-aware, with citations to the commands.
@@ -79,9 +84,8 @@ Then, inside the REPL:
 ```
 
 What happens:
-1. Copilot reads `scripts/csv_normaliser.py` (asks permission first time it
-   reads a file).
-2. Proposes an edit. Press **Tab** to inspect the diff, **Enter** to accept.
+1. Copilot reads `scripts/csv_normaliser.py` within the trusted workspace.
+2. Inspect the proposed change with the diff view or `/diff`.
 3. Wants to run `python scripts/csv_normaliser.py --dry-run fixtures/in.csv`.
    Choose **allow once** or **allow always for this command**.
 4. Reports results.
@@ -97,15 +101,17 @@ runs.
 Inside the REPL:
 
 ```
-> Across scripts/, replace every use of `print(...)` with a `log.info(...)` call
+> Across scripts/, replace diagnostic `print(...)` calls with `log.info(...)`
   from a new module `scripts/loglib.py` that wraps the stdlib logging module
-  with a sensible format. Don't break the existing CLIs.
+  with a sensible format. Preserve CSV and generated log records as data on
+  stdout; send diagnostics to stderr. Don't break the existing CLIs.
 ```
 
 ✅ Watch Copilot:
 - Create `scripts/loglib.py`.
-- Open each script, rewrite `print` calls, add the import.
-- Run a quick sanity check (`python scripts/csv_normaliser.py --help`).
+- Distinguish data output from diagnostics before editing either script.
+- Check fixture output as well as CLI behavior. The starter does not yet
+  implement argparse or a `--help` option.
 
 🎯 **Lesson:** Cross-file refactors in the CLI are great when the change is
 **mechanical but pervasive** — exactly where IDE refactor tools fall short
@@ -123,9 +129,9 @@ Inside the REPL:
   Show me your evidence (line numbers).
 ```
 
-✅ Copilot greps / awks the log file (asking permission), groups, and gives
-you a citation-backed summary. It will NOT make up endpoints — if uncertain,
-it tells you.
+Require a citation-backed summary and verify the counts. This log contains
+status codes and endpoints, not enough evidence to establish a root cause.
+Any explanation of *why* checkout failed must be labelled a hypothesis.
 
 🎯 **Lesson:** Log spelunking is repetitive command-fu (grep, awk, sort,
 uniq -c, sort -nr…). The CLI is excellent at this and remembers what it
@@ -154,17 +160,22 @@ admin work that doesn't deserve a real script.
 Quit the REPL. Then:
 
 ```bash
-copilot -p "Write a Python script scripts/bulk_rename.py that renames every .jpeg in a given folder to .jpg, preserving case-sensitivity, with a --dry-run flag. Include a small unit test under tests/."
+copilot
 ```
 
-✅ Copilot writes both files. Inspect, accept, run tests.
+Ask it to draft `scripts/bulk_rename.py` with a dry-run mode, a refusal to
+overwrite existing targets, and tests in a temporary directory. Review the
+write and execution permissions interactively. Do not point a first run at
+your photo library.
 
 ---
 
 ## Transcripts
 
-See `transcripts/` for **annotated copies** of real Copilot CLI sessions for
-each scenario, so you can read them before trying yourself.
+See `transcripts/` for **archived, illustrative walkthroughs**. Their UI and
+sample output are not a current command reference or a golden fixture.
+For example, the current CSV script trims/lowercases headers but does not
+replace interior spaces or lowercase email values.
 
 ## Try it yourself
 
@@ -178,13 +189,13 @@ each scenario, so you can read them before trying yourself.
 ## Talking points
 - The CLI has access to your **whole shell** — that's powerful and dangerous.
   Use a clean working directory; review every command; never blanket-allow.
-- The agent **remembers across turns** but loses context when you exit the
-  REPL. For long-running work, keep one REPL session open.
+- Sessions can be resumed; use `/resume` and `/session`. Keep unrelated tasks
+  in separate sessions and record important decisions in repository artifacts.
 - Pair the CLI with **shell aliases** (e.g., `alias ?='copilot -p'`) to lower
   the friction of one-shot questions.
 - The Copilot CLI honours the same content-exclusion and policy controls as
   the IDE — Enterprise / Business admins can configure both centrally.
 
 ## Next demo →
-[Demo 05 — Customising Copilot with AGENTS.md](../ghcp-demo-05-agents-md-customization)
+[Demo 05 — Customising Copilot with AGENTS.md](https://github.com/xavierxmorris/ghcp-demo-05-agents-md-customization)
 — teach Copilot your conventions so it stops fighting your style guide.
